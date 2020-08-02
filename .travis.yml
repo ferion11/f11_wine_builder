@@ -5,7 +5,9 @@ addons:
     - sourceline: 'ppa:ubuntu-toolchain-r/test'
     packages:
     - gcc-9
+    - gcc-9-multilib
     - g++-9
+    - g++-9-multilib
 
 sudo: required
 
@@ -15,11 +17,9 @@ env:
   global:
     - RELEASE_BRANCH="master"
 
-#before_install:
-#  # add and install install gcc-9:
-#  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-#  - sudo apt update
-#  - sudo apt install -y --install-recommends gcc-9 g++-9
+before_install:
+  # replacing default gcc and g++
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
 
 #install:
 #
@@ -28,8 +28,8 @@ before_script:
   - mkdir result
 
 script:
-  #- sudo bash f11_wine_builder.sh.sh
-  - bash f11_wine_builder.sh.sh
+  #- sudo bash f11_wine_builder.sh
+  - bash f11_wine_builder.sh
 
 after_success:
   # md5sum tool
