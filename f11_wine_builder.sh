@@ -20,9 +20,8 @@ die() { echo >&2 "$*"; exit 1; };
 #=================================================
 
 echo "* Getting gentoo wine patchs for winegcc.patch:"
-wget -c "https://dev.gentoo.org/~sarnex/distfiles/wine/gentoo-wine-patchmkdir build-tools && cd build-tools' >> $MAINDIR/build32.sh
-	echo '../wine/configure '${WINE_BUILD_OPTIONSes-${GENTOO_PATCH_VERSION}.tar.xz"
-tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Can't extract the gentoo patchs"
+wget -c "https://dev.gentoo.org/~sarnex/distfiles/wine/gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz"
+tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Cant extract the gentoo patchs"
 
 echo "* Install deps:"
 apt-get -y build-dep wine-development wine-stable:i386 libsdl2 libvulkan1 xz-utils
@@ -33,7 +32,7 @@ apt-get -y autoclean
 
 echo "* compile and install more deps:"
 mkdir "$HOME/build_libs"
-cd "$HOME/build_libs"
+cd "$HOME/build_libs" || die "* Cant enter on dir build_libs!"
 
 echo "* downloading all:"
 wget "https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz"
@@ -52,8 +51,9 @@ tar xf "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
 
 build_and_install() {
 	echo "* Building and installing: $1"
-	mkdir build && cd build
-	cmake ../"$1" && make -j$(nproc) && sudo make install
+	mkdir build
+	cd build || die "* Cant enter on build dir!"
+	cmake ../"$1" && make -j"$(nproc)" && sudo make install
 	cd ../ && sudo rm -r build
 }
 
@@ -62,12 +62,13 @@ build_and_install "FAudio-${FAUDIO_VERSION}"
 build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
-cd vkd3d-proton && ./autogen.sh
+cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
+./autogen.sh
 ./configure
-make -j$(nproc)
+make -j"$(nproc)"
 sudo make install
 
-cd "$HOME"
+cd "$HOME" || die "Cant enter on $HOME dir!"
 rm -rf "$HOME/build_libs"
 #==============================================================================
 echo "* Wine part:"
@@ -78,16 +79,19 @@ mv "wine-{WINE_VERSION}" "wine-src"
 
 wget "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
 tar xf "v$WINE_VERSION.tar.gz"
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="$HOME/wine-src" --all || die "* Can't apply the wine-staging patches!"
+"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="$HOME/wine-src" --all || die "* Cant apply the wine-staging patches!"
 
 echo "* Compiling:"
 mkdir "wine-staging"
-cd wine-src && ./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
-make -j$(nproc)
+cd wine-src || die "* Cant enter on the wine-src dir!"
+./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
+make -j"$(nproc)"
 make install
 
 echo "* Some clean:"
-cd "$HOME/wine-staging" && rm -r include && rm -r share/applications && rm -r share/man && cd "$HOME"
+cd "$HOME/wine-staging" || die "* Cant enter on the wine-staging dir!"
+rm -r include && rm -r share/applications && rm -r share/man
+cd "$HOME" || die "Cant enter on $HOME dir!"
 
 echo "* Strip all binaries and libraries:"
 find "$HOME/wine-staging" -type f -exec strip --strip-unneeded {} \;
