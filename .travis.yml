@@ -1,0 +1,68 @@
+dist: bionic
+addons:
+  apt:
+    sources:
+    - sourceline: 'ppa:ubuntu-toolchain-r/test'
+    packages:
+    - gcc-9
+    - g++-9
+
+sudo: required
+
+language: cpp
+
+env:
+  global:
+    - RELEASE_BRANCH="master"
+
+#before_install:
+#  # add and install install gcc-9:
+#  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+#  - sudo apt update
+#  - sudo apt install -y --install-recommends gcc-9 g++-9
+
+#install:
+#
+
+before_script:
+  - mkdir result
+
+script:
+  #- sudo bash f11_wine_builder.sh.sh
+  - bash f11_wine_builder.sh.sh
+
+after_success:
+  # md5sum tool
+  - wget -c https://github.com/ferion11/libsutil/releases/download/md5sum_util_v0.1/md5sum_util.sh
+  - bash md5sum_util.sh result
+
+  # uploadtool
+  - wget -c https://github.com/probonopd/uploadtool/raw/master/upload.sh
+
+  - |- # publish
+    if [[ ("$TRAVIS_BRANCH" != "$RELEASE_BRANCH" && "$TRAVIS_BRANCH" != "$TRAVIS_TAG") || "$TRAVIS_EVENT_TYPE" != "push" ]]; then
+      echo 'Publishing release to GitHub...'
+      export UPLOADTOOL_SUFFIX="$TRAVIS_BRANCH"
+      export UPLOADTOOL_BODY="Instructions on the README can be found [here](https://github.com/${TRAVIS_REPO_SLUG}/blob/master/README.md)\n\nThis is the ***$UPLOADTOOL_SUFFIX experimental build*** for testing new features.\n\nTravis CI build log: $TRAVIS_BUILD_WEB_URL"
+      bash upload.sh result/*
+    elif [[ "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ]]; then
+      echo 'Publishing release to GitHub...'
+      export UPLOADTOOL_BODY="Instructions on the README can be found [here](https://github.com/${TRAVIS_REPO_SLUG}/blob/master/README.md)\n\nThis is the ***latest development build***.\n\nTravis CI build log: $TRAVIS_BUILD_WEB_URL"
+      bash upload.sh result/*
+    else
+      echo 'Publishing release to GitHub...'
+      export UPLOADTOOL_BODY="Instructions on the README can be found [here](https://github.com/${TRAVIS_REPO_SLUG}/blob/master/README.md)\n\nThis is the ***release $TRAVIS_TAG stable build***.\n\nTravis CI build log: $TRAVIS_BUILD_WEB_URL"
+      bash upload.sh result/*
+    fi
+
+branches:
+  except:
+    - # Do not build tags that we create when we upload to GitHub Releases
+    - /^(?i:continuous)$/
+    - /^release-[0-9a-z\-]*/
+    - /^(?i:untagged)-.*$/
+
+notifications:
+  email:
+    on_success: change # default: change
+    on_failure: always # default: always
