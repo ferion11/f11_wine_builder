@@ -24,11 +24,11 @@ wget -c "https://dev.gentoo.org/~sarnex/distfiles/wine/gentoo-wine-patches-${GEN
 tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Cant extract the gentoo patchs"
 
 echo "* Install deps:"
-apt-get -y build-dep wine-development wine-stable:i386 libsdl2 libvulkan1 xz-utils
-apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev
-apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove
-apt-get -y clean
-apt-get -y autoclean
+apt-get -y build-dep wine-development wine-stable:i386 libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
+apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev || die "* apt-get error!"
+apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get error!"
+apt-get -y clean || die "* apt-get error!"
+apt-get -y autoclean || die "* apt-get error!"
 
 echo "* compile and install more deps:"
 mkdir "$HOME/build_libs"
@@ -43,17 +43,19 @@ wget "https://github.com/KhronosGroup/SPIRV-Headers/archive/${SPIRV_VERSION}.tar
 git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
 
 echo "* extracting:"
-tar xf "SDL2-${SDL2_VERSION}.tar.gz"
-tar xf "FAudio-${FAUDIO_VERSION}.tar.gz"
-tar xf "Vulkan-Headers-${VULKAN_VERSION}.tar.gz"
-tar xf "Vulkan-Loader-${VULKAN_VERSION}.tar.gz"
-tar xf "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
+tar xf "SDL2-${SDL2_VERSION}.tar.gz" || die "* extract tar.gz error!"
+tar xf "FAudio-${FAUDIO_VERSION}.tar.gz" || die "* extract tar.gz error!"
+tar xf "Vulkan-Headers-${VULKAN_VERSION}.tar.gz" || die "* extract tar.gz error!"
+tar xf "Vulkan-Loader-${VULKAN_VERSION}.tar.gz" || die "* extract tar.gz error!"
+tar xf "SPIRV-Headers-${SPIRV_VERSION}.tar.gz" || die "* extract tar.gz error!"
 
 build_and_install() {
 	echo "* Building and installing: $1"
 	mkdir build
 	cd build || die "* Cant enter on build dir!"
-	cmake ../"$1" && make -j"$(nproc)" && sudo make install
+	cmake ../"$1"
+	make -j"$(nproc)" || die "* Cant make $1!"
+	sudo make install || die "* Cant install $1!"
 	cd ../ && sudo rm -r build
 }
 
@@ -64,9 +66,9 @@ build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 ./autogen.sh
-./configure
-make -j"$(nproc)"
-sudo make install
+./configure || die "* vkd3d-proton configure error!"
+make -j"$(nproc)" || die "* vkd3d-proton make error!"
+sudo make install || die "* vkd3d-proton install error!"
 
 cd "$HOME" || die "Cant enter on $HOME dir!"
 rm -rf "$HOME/build_libs"
@@ -74,19 +76,19 @@ rm -rf "$HOME/build_libs"
 echo "* Wine part:"
 echo "* Getting wine source and patch:"
 wget "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
-tar xf "wine-${WINE_VERSION}.tar.xz"
-mv "wine-{WINE_VERSION}" "wine-src"
+tar xf "wine-${WINE_VERSION}.tar.xz" || die "* cant extract wine!"
+mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
 wget "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
-tar xf "v$WINE_VERSION.tar.gz"
+tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="$HOME/wine-src" --all || die "* Cant apply the wine-staging patches!"
 
 echo "* Compiling:"
 mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
 ./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
-make -j"$(nproc)"
-make install
+make -j"$(nproc)" || die "* cant make wine!"
+make install || die "* cant install wine!"
 
 echo "* Some clean:"
 cd "$HOME/wine-staging" || die "* Cant enter on the wine-staging dir!"
