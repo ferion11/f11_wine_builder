@@ -23,8 +23,7 @@ before_script:
   - mkdir result
 
 script:
-  #- sudo bash f11_wine_builder.sh
-  - bash f11_wine_builder.sh
+  - bash f11_wine_builder.sh 5.11
 
 after_success:
   # md5sum tool
