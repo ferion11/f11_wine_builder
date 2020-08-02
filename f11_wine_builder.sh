@@ -25,7 +25,7 @@ tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Cant extra
 
 echo "* Install deps:"
 sudo apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
-sudo apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev || die "* apt-get error!"
+sudo apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev libvkd3d-dev || die "* apt-get error!"
 sudo apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get error!"
 sudo apt-get -y clean || die "* apt-get error!"
 sudo apt-get -y autoclean || die "* apt-get error!"
