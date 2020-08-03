@@ -1,29 +1,38 @@
 #!/bin/bash
+#export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_VERSION="5.11"
+export SDL2_VERSION="2.0.12"
+export FAUDIO_VERSION="20.08"
+export VULKAN_VERSION="1.2.145"
+export SPIRV_VERSION="1.5.3"
+
 # nehalem go up to sse4.2
-export C_COMPILER="gcc-9"
-export CXX_COMPILER="g++-9"
 export CFLAGS="-march=nehalem -O2 -pipe -ftree-vectorize -fno-stack-protector"
 export CXXFLAGS="${CFLAGS}"
 export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
-
-#export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
-export WINE_VERSION="$1"
-
-SDL2_VERSION="2.0.12"
-FAUDIO_VERSION="20.08"
-VULKAN_VERSION="1.2.145"
-SPIRV_VERSION="1.5.3"
+#==============================================================================
 
 #=================================================
 die() { echo >&2 "$*"; exit 1; };
 #=================================================
+#==============================================================================
+
+cat /etc/issue
+cat /etc/issue > "wine-staging-${WINE_VERSION}.tar.gz"
+tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
+exit 0
 
 echo "* Install deps:"
-sudo apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
-sudo apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev libicu-dev:i386 libasound2-dev:i386 libgsm1-dev:i386 libjpeg8-dev:i386 liblcms2-dev:i386 libldap2-dev:i386 libmpg123-dev:i386 libopenal-dev:i386 libv4l-dev:i386 libx11-dev:i386 libxinerama-dev:i386 libxml2-dev:i386 zlib1g-dev:i386 libcapi20-dev:i386 libcups2:i386 libdbus-1-3:i386 libfontconfig:i386 libfreetype6:i386 libglu1-mesa:i386 libgnutls28-dev:i386 libncurses5:i386 libosmesa6:i386 libsane:i386 libxcomposite1:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libxslt1.1:i386 ocl-icd-libopencl1:i386 xorg-dev libfreetype6-dev:i386 || die "* apt-get error!"
-sudo apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get purge error!"
-sudo apt-get -y clean || die "* apt-get clean error!"
-sudo apt-get -y autoclean || die "* apt-get autoclean error!"
+add-apt-repository universe
+add-apt-repository multiverse
+apt-get update
+apt-get -y upgrade
+apt-get -y dist-upgrade
+apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
+apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev libicu-dev:i386 libasound2-dev:i386 libgsm1-dev:i386 libjpeg8-dev:i386 liblcms2-dev:i386 libldap2-dev:i386 libmpg123-dev:i386 libopenal-dev:i386 libv4l-dev:i386 libx11-dev:i386 libxinerama-dev:i386 libxml2-dev:i386 zlib1g-dev:i386 libcapi20-dev:i386 libcups2:i386 libdbus-1-3:i386 libfontconfig:i386 libfreetype6:i386 libglu1-mesa:i386 libgnutls28-dev:i386 libncurses5:i386 libosmesa6:i386 libsane:i386 libxcomposite1:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libxslt1.1:i386 ocl-icd-libopencl1:i386 xorg-dev libfreetype6-dev:i386 || die "* apt-get error!"
+apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get purge error!"
+apt-get -y clean || die "* apt-get clean error!"
+apt-get -y autoclean || die "* apt-get autoclean error!"
 
 echo "* compile and install more deps:"
 mkdir "$HOME/build_libs"
@@ -50,8 +59,8 @@ build_and_install() {
 	cd build || die "* Cant enter on build dir!"
 	cmake ../"$1"
 	make -j"$(nproc)" || die "* Cant make $1!"
-	sudo make install || die "* Cant install $1!"
-	cd ../ && sudo rm -r build
+	make install || die "* Cant install $1!"
+	cd ../ && rm -r build
 }
 
 build_and_install "SDL2-${SDL2_VERSION}"
@@ -68,11 +77,12 @@ build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
 #./autogen.sh
 #./configure || die "* vkd3d-proton configure error!"
 #make -j"$(nproc)" || die "* vkd3d-proton make error!"
-#sudo make install || die "* vkd3d-proton install error!"
+#make install || die "* vkd3d-proton install error!"
 
 cd "$HOME" || die "Cant enter on $HOME dir!"
 rm -rf "$HOME/build_libs"
 #==============================================================================
+
 echo "* Wine part:"
 echo "* Getting wine source and patch:"
 wget "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
@@ -100,4 +110,8 @@ echo "* Strip all binaries and libraries:"
 find "$HOME/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
-XZ_OPT=-9 tar cvJf "/tmp/wine-staging-${WINE_VERSION}.tar.xz" wine-staging
+tar czvf "wine-staging-${WINE_VERSION}.tar.gz" wine-staging
+
+echo "Packing tar result file..."
+tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
+echo "* result.tar size: $(du -hs result.tar)"
