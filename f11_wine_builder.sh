@@ -9,7 +9,6 @@ export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 export WINE_VERSION="$1"
 
-GENTOO_PATCH_VERSION="20200523"
 SDL2_VERSION="2.0.12"
 FAUDIO_VERSION="20.08"
 VULKAN_VERSION="1.2.145"
@@ -19,9 +18,9 @@ SPIRV_VERSION="1.5.3"
 die() { echo >&2 "$*"; exit 1; };
 #=================================================
 
-echo "* Getting gentoo wine patchs for winegcc.patch:"
-wget -c "https://dev.gentoo.org/~sarnex/distfiles/wine/gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz"
-tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Cant extract the gentoo patchs"
+cd "$HOME"
+touch "wine-staging-${WINE_VERSION}.tar.xz"
+exit 0
 
 echo "* Install deps:"
 sudo apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
@@ -106,6 +105,3 @@ find "$HOME/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
 XZ_OPT=-9 tar cvJf "wine-staging-${WINE_VERSION}.tar.xz" wine-staging
-
-ls -l
-pwd
