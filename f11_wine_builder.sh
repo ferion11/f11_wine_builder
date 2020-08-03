@@ -25,7 +25,7 @@ tar xf "gentoo-wine-patches-${GENTOO_PATCH_VERSION}.tar.xz" || die "* Cant extra
 
 echo "* Install deps:"
 sudo apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
-sudo apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev libvkd3d-dev || die "* apt-get error!"
+sudo apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev || die "* apt-get error!"
 sudo apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get error!"
 sudo apt-get -y clean || die "* apt-get error!"
 sudo apt-get -y autoclean || die "* apt-get error!"
@@ -40,7 +40,7 @@ wget "https://github.com/FNA-XNA/FAudio/archive/${FAUDIO_VERSION}.tar.gz" -O "FA
 wget "https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Headers-${VULKAN_VERSION}.tar.gz"
 wget "https://github.com/KhronosGroup/Vulkan-Loader/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Loader-${VULKAN_VERSION}.tar.gz"
 wget "https://github.com/KhronosGroup/SPIRV-Headers/archive/${SPIRV_VERSION}.tar.gz"  -O "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
-git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
+#git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
 
 echo "* extracting:"
 tar xf "SDL2-${SDL2_VERSION}.tar.gz" || die "* extract tar.gz error!"
@@ -64,15 +64,16 @@ build_and_install "FAudio-${FAUDIO_VERSION}"
 build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
-echo "* widl workaround for vkd3d-proton"
-wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb
-dpkg -x wine.deb .
-cp ./opt/wine-stable/bin/widl /usr/bin/
-cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
-./autogen.sh
-./configure || die "* vkd3d-proton configure error!"
-make -j"$(nproc)" || die "* vkd3d-proton make error!"
-sudo make install || die "* vkd3d-proton install error!"
+# Need libvkd3d-dev package that refuse to install on bionic
+#echo "* widl workaround for vkd3d-proton"
+#wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb
+#dpkg -x wine.deb .
+#cp ./opt/wine-stable/bin/widl /usr/bin/
+#cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
+#./autogen.sh
+#./configure || die "* vkd3d-proton configure error!"
+#make -j"$(nproc)" || die "* vkd3d-proton make error!"
+#sudo make install || die "* vkd3d-proton install error!"
 
 cd "$HOME" || die "Cant enter on $HOME dir!"
 rm -rf "$HOME/build_libs"
