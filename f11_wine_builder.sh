@@ -19,7 +19,7 @@ die() { echo >&2 "$*"; exit 1; };
 #=================================================
 
 cd "$HOME"
-touch "wine-staging-${WINE_VERSION}.tar.xz"
+touch "/tmp/wine-staging-${WINE_VERSION}.tar.xz"
 exit 0
 
 echo "* Install deps:"
@@ -104,4 +104,4 @@ echo "* Strip all binaries and libraries:"
 find "$HOME/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
-XZ_OPT=-9 tar cvJf "wine-staging-${WINE_VERSION}.tar.xz" wine-staging
+XZ_OPT=-9 tar cvJf "/tmp/wine-staging-${WINE_VERSION}.tar.xz" wine-staging
