@@ -17,11 +17,6 @@ die() { echo >&2 "$*"; exit 1; };
 #=================================================
 #==============================================================================
 
-cat /etc/issue
-cat /etc/issue > "wine-staging-${WINE_VERSION}.tar.gz"
-tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
-exit 0
-
 echo "* Install deps:"
 add-apt-repository universe
 add-apt-repository multiverse
