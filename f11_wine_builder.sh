@@ -19,7 +19,7 @@ die() { echo >&2 "$*"; exit 1; };
 #=================================================
 
 cd "$HOME"
-touch "/tmp/wine-staging-${WINE_VERSION}.tar.xz"
+echo "teste" > "/tmp/wine-staging-${WINE_VERSION}.tar.xz"
 exit 0
 
 echo "* Install deps:"
