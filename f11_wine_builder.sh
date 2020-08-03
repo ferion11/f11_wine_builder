@@ -64,6 +64,10 @@ build_and_install "FAudio-${FAUDIO_VERSION}"
 build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
+echo "* widl workaround for vkd3d-proton"
+wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb
+dpkg -x wine.deb .
+cp ./opt/wine-stable/bin/widl /usr/bin/
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 ./autogen.sh
 ./configure || die "* vkd3d-proton configure error!"
