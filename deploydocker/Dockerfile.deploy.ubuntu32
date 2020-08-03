@@ -1,4 +1,4 @@
-FROM i386/ubuntu:latest
+FROM i386/ubuntu:bionic
 
 COPY . /srv/ubuntu32
 

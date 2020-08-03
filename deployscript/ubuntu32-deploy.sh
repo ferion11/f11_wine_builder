@@ -6,6 +6,9 @@ export FAUDIO_VERSION="20.08"
 export VULKAN_VERSION="1.2.145"
 export SPIRV_VERSION="1.5.3"
 
+export CHROOT_DISTRO="bionic"
+export CHROOT_MIRROR="http://archive.ubuntu.com/ubuntu/"
+
 # nehalem go up to sse4.2
 export CFLAGS="-march=nehalem -O2 -pipe -ftree-vectorize -fno-stack-protector"
 export CXXFLAGS="${CFLAGS}"
@@ -16,11 +19,14 @@ export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 die() { echo >&2 "$*"; exit 1; };
 #=================================================
 #==============================================================================
+cat /etc/issue
+
+# Ubuntu Main Repos:
+echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
+echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" >> /etc/apt/sources.list
 
 echo "* Install deps:"
-add-apt-repository universe
-add-apt-repository multiverse
-apt-get update
+apt-get -y update
 apt-get -y upgrade
 apt-get -y dist-upgrade
 apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
