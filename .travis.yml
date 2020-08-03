@@ -22,13 +22,12 @@ before_install:
   - g++ --version
 
 #install:
-#
-
-before_script:
-  - mkdir result
+#before_script:
 
 script:
   - bash f11_wine_builder.sh 5.11
+  - mkdir result
+  - mv wine-staging-5.11.tar.xz result/
 
 after_success:
   # md5sum tool
