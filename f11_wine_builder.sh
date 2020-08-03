@@ -7,7 +7,6 @@ export CXXFLAGS="${CFLAGS}"
 export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
-export WINE_BUILD_OPTIONS="--disable-win16 --disable-tests"
 export WINE_VERSION="$1"
 
 GENTOO_PATCH_VERSION="20200523"
@@ -92,7 +91,8 @@ tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 echo "* Compiling:"
 mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
-./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
+#./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
+./configure --prefix "$HOME/wine-staging"
 make -j"$(nproc)" || die "* cant make wine!"
 make install || die "* cant install wine!"
 
