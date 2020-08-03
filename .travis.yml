@@ -26,8 +26,9 @@ before_install:
 
 script:
   - bash f11_wine_builder.sh 5.11
+  - ls -l
   - mkdir result
-  - mv wine-staging-5.11.tar.xz result/
+  - mv wine-staging-5.11.tar.xz ./result/
 
 after_success:
   # md5sum tool

@@ -108,3 +108,4 @@ echo "* Compressing:"
 XZ_OPT=-9 tar cvJf "wine-staging-${WINE_VERSION}.tar.xz" wine-staging
 
 ls -l
+pwd
