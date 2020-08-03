@@ -12,9 +12,9 @@ before_install:
   # replacing default gcc and g++
   - sudo add-apt-repository universe
   - sudo add-apt-repository multiverse
-  - apt-get update
-  - apt-get -y upgrade
-  - apt-get -y dist-upgrade
+  - sudo apt-get update
+  - sudo apt-get -y upgrade
+  - sudo apt-get -y dist-upgrade
   - sudo add-apt-repository -y 'ppa:ubuntu-toolchain-r/test'
   - sudo apt install -y --install-recommends gcc-9 gcc-9-multilib g++-9 g++-9-multilib
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 60 --slave /usr/bin/g++ g++ /usr/bin/g++-9
