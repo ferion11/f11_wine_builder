@@ -31,7 +31,7 @@ sudo apt-get -y clean || die "* apt-get error!"
 sudo apt-get -y autoclean || die "* apt-get error!"
 echo "* install: libvkd3d-dev for bionic:"
 wget -c http://mirrors.kernel.org/ubuntu/pool/universe/v/vulkan/libvulkan-dev_1.1.70+dfsg1-1_amd64.deb
-sudo apt install ./libvulkan-dev_1.1.70+dfsg1-1_amd64.deb || die "* cant install the libvulkan!"
+sudo dpkg -i ./libvulkan-dev_1.1.70+dfsg1-1_amd64.deb || die "* cant install the libvulkan!"
 
 echo "* compile and install more deps:"
 mkdir "$HOME/build_libs"
