@@ -6,7 +6,8 @@ export CFLAGS="-march=nehalem -O2 -pipe -ftree-vectorize -fno-stack-protector"
 export CXXFLAGS="${CFLAGS}"
 export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
 
-export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
+#export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
+export WINE_BUILD_OPTIONS="--without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 export WINE_VERSION="$1"
 
 GENTOO_PATCH_VERSION="20200523"
