@@ -37,22 +37,22 @@ echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-updates main restricted universe
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-proposed main restricted universe multiverse" >> /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
-apt-get -q -y update
+apt-get -q -y update >/dev/null
 echo "* Install software-properties-common:"
-apt-get -q -y install software-properties-common || die "* apt software-properties-common erro!"
+apt-get -q -y install software-properties-common >/dev/null || die "* apt software-properties-common erro!"
 
 # gcc-9 ppa:
-add-apt-repository ppa:ubuntu-toolchain-r/test
+add-apt-repository ppa:ubuntu-toolchain-r/test >/dev/null
 
 echo "* update, upgrade and dist-upgrade:"
-apt-get -q -y update
-apt-get -q -y upgrade
-apt-get -q -y dist-upgrade
+apt-get -q -y update >/dev/null
+apt-get -q -y upgrade >/dev/null
+apt-get -q -y dist-upgrade >/dev/null
 
 echo "* Install deps:"
-apt-get -q -y install wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex bison || die "* apt basic erro!"
-apt-get -q -y install xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 || die "* main apt erro!"
-apt-get -q -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt purge error!"
+apt-get -q -y install wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex bison >/dev/null || die "* apt basic erro!"
+apt-get -q -y install xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 >/dev/null || die "* main apt erro!"
+apt-get -q -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove >/dev/null || die "* apt purge error!"
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
@@ -82,9 +82,9 @@ build_and_install() {
 	echo "* Building and installing: $1"
 	mkdir build
 	cd build || die "* Cant enter on build dir!"
-	cmake ../"$1"
-	make -j"$(nproc)" || die "* Cant make $1!"
-	make install || die "* Cant install $1!"
+	cmake ../"$1" >/dev/null
+	make -j"$(nproc)" >/dev/null || die "* Cant make $1!"
+	make install >/dev/null || die "* Cant install $1!"
 	cd ../ && rm -r build
 }
 
@@ -99,10 +99,10 @@ wget -q https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/w
 dpkg -x wine-stable_5.0.1~bionic_i386.deb .
 cp ./opt/wine-stable/bin/widl /usr/bin/ || die "cant copy widl erro!"
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
-./autogen.sh
-./configure || die "* vkd3d-proton configure error!"
-make -j"$(nproc)" || die "* vkd3d-proton make error!"
-make install || die "* vkd3d-proton install error!"
+./autogen.sh >/dev/null
+./configure >/dev/null || die "* vkd3d-proton configure error!"
+make -j"$(nproc)" >/dev/null || die "* vkd3d-proton make error!"
+make install >/dev/null || die "* vkd3d-proton install error!"
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 rm -rf "${WORKDIR}/build_libs"
@@ -126,15 +126,12 @@ cd wine-src || die "* Cant enter on the wine-src dir!"
 make -j"$(nproc)" || die "* cant make wine!"
 make install || die "* cant install wine!"
 
-
 cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
 echo "* Some clean:"
 rm -r include && rm -r share/applications && rm -r share/man
-
 echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
 tar czf "wine-staging-${WINE_VERSION}.tar.gz" *
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
-
 
 echo "Packing tar result file..."
 tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
