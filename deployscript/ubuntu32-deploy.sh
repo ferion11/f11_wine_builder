@@ -24,24 +24,19 @@ cat /etc/issue
 # Ubuntu Main Repos:
 echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" >> /etc/apt/sources.list
-apt-get -y update
-apt-get install -y software-properties-common wget sudo || die "* first apt-get erro!"
-
-# add deps for wine:
-add-apt-repository -y ppa:cybermax-dexter/sdl2-backport
-wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
-add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${CHROOT_DISTRO} main"
 
 echo "* Install deps:"
 apt-get -y update
 apt-get -y upgrade
 apt-get -y dist-upgrade
-#apt-get -y build-dep wine-development libsdl2 libvulkan1 xz-utils || die "* apt-get error!"
-#apt-get -y install libusb-1.0-0-dev libgcrypt20-dev libpulse-dev libudev-dev libsane-dev libv4l-dev libkrb5-dev libgphoto2-dev liblcms2-dev libpcap-dev libcapi20-dev libicu-dev:i386 libasound2-dev:i386 libgsm1-dev:i386 libjpeg8-dev:i386 liblcms2-dev:i386 libldap2-dev:i386 libmpg123-dev:i386 libopenal-dev:i386 libv4l-dev:i386 libx11-dev:i386 libxinerama-dev:i386 libxml2-dev:i386 zlib1g-dev:i386 libcapi20-dev:i386 libcups2:i386 libdbus-1-3:i386 libfontconfig:i386 libfreetype6:i386 libglu1-mesa:i386 libgnutls28-dev:i386 libncurses5:i386 libosmesa6:i386 libsane:i386 libxcomposite1:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libxslt1.1:i386 ocl-icd-libopencl1:i386 xorg-dev libfreetype6-dev:i386 || die "* apt-get error!"
+#apt-get -y install libicu-dev:i386 libasound2-dev:i386 libgsm1-dev:i386 libjpeg8-dev:i386 liblcms2-dev:i386 libldap2-dev:i386 libmpg123-dev:i386 libopenal-dev:i386 libv4l-dev:i386 libx11-dev:i386 libxinerama-dev:i386 libxml2-dev:i386 zlib1g-dev:i386 libcapi20-dev:i386 libcups2:i386 libdbus-1-3:i386 libfontconfig:i386 libfreetype6:i386 libglu1-mesa:i386 libgnutls28-dev:i386 libncurses5:i386 libosmesa6:i386 libsane:i386 libxcomposite1:i386 libxcursor1:i386 libxi6:i386 libxrandr2:i386 libxslt1.1:i386 ocl-icd-libopencl1:i386 xorg-dev libfreetype6-dev:i386 || die "* apt-get error!"
 #apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get purge error!"
 #apt-get -y clean || die "* apt-get clean error!"
 #apt-get -y autoclean || die "* apt-get autoclean error!"
-apt install winehq-stable:i386 xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386
+BASIC_SYSTEM_PACKAGES="software-properties-common wget sudo build-essential cmake xz-utils gzip"
+OTHERS_DEPS="xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386"
+EXTRA_DEV_PACKAGES="libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 "
+apt install "${BASIC_SYSTEM_PACKAGES} ${OTHERS_DEPS} ${EXTRA_DEV_PACKAGES}" || die "* main apt-get erro!"
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
@@ -78,7 +73,10 @@ build_and_install "FAudio-${FAUDIO_VERSION}"
 build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
-# Need libvkd3d-dev package that refuse to install on bionic, using winehq-stable:i386
+# Need libvkd3d-dev package that refuse to install on bionic, so workaround:
+wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_5.0.1~bionic_i386.deb
+dpkg -x wine.deb .
+cp ./opt/wine-stable/bin/widl /usr/bin/ || die "cant copy widl erro!"
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 ./autogen.sh
 ./configure || die "* vkd3d-proton configure error!"
