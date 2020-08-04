@@ -89,7 +89,7 @@ build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
 # Need libvkd3d-dev package that refuse to install on bionic, so workaround:
 wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_5.0.1~bionic_i386.deb
-dpkg -x wine.deb .
+dpkg -x wine-stable_5.0.1~bionic_i386.deb .
 cp ./opt/wine-stable/bin/widl /usr/bin/ || die "cant copy widl erro!"
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 ./autogen.sh
