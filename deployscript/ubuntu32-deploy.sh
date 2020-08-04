@@ -20,6 +20,7 @@ die() { echo >&2 "$*"; exit 1; };
 #=================================================
 #==============================================================================
 cat /etc/issue
+WORKDIR=$(pwd)
 
 # Ubuntu Main Repos:
 echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
@@ -48,14 +49,14 @@ apt-get -y dist-upgrade
 
 #apt-get -y clean || die "* apt-get clean error!"
 #apt-get -y autoclean || die "* apt-get autoclean error!"
-apt install -y --install-recommends wget git sudo make cmake gcc-9 g++-9 xz-utils || die "* apt basic erro!"
+apt install -y --install-recommends wget git sudo make cmake gcc-9 g++-9 xz-utils flex || die "* apt basic erro!"
 apt install -y --install-recommends xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 || die "* main apt erro!"
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt purge error!"
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
-mkdir "/tmp/build_libs"
-cd "/tmp/build_libs" || die "* Cant enter on dir build_libs!"
+mkdir "${WORKDIR}/build_libs"
+cd "${WORKDIR}/build_libs" || die "* Cant enter on dir build_libs!"
 
 echo "* downloading all:"
 wget "https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz"
@@ -97,8 +98,8 @@ cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 make -j"$(nproc)" || die "* vkd3d-proton make error!"
 make install || die "* vkd3d-proton install error!"
 
-cd "/tmp" || die "Cant enter on /tmp dir!"
-rm -rf "/tmp/build_libs"
+cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
+rm -rf "${WORKDIR}/build_libs"
 #==============================================================================
 
 echo "* Wine part:"
@@ -109,23 +110,23 @@ mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
 wget "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
 tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="/tmp/wine-src" --all || die "* Cant apply the wine-staging patches!"
+"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all || die "* Cant apply the wine-staging patches!"
 
 echo "* Compiling:"
 mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
-#./configure "${WINE_BUILD_OPTIONS}" --prefix "/tmp/wine-staging"
-./configure --prefix "/tmp/wine-staging"
+#./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-staging"
+./configure --prefix "${WORKDIR}/wine-staging"
 make -j"$(nproc)" || die "* cant make wine!"
 make install || die "* cant install wine!"
 
 echo "* Some clean:"
-cd "/tmp/wine-staging" || die "* Cant enter on the wine-staging dir!"
+cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
 rm -r include && rm -r share/applications && rm -r share/man
-cd "/tmp" || die "Cant enter on /tmp dir!"
+cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 
 echo "* Strip all binaries and libraries:"
-find "/tmp/wine-staging" -type f -exec strip --strip-unneeded {} \;
+find "${WORKDIR}/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
 tar czvf "wine-staging-${WINE_VERSION}.tar.gz" wine-staging
