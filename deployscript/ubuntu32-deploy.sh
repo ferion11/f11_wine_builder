@@ -126,18 +126,15 @@ cd wine-src || die "* Cant enter on the wine-src dir!"
 make -j"$(nproc)" || die "* cant make wine!"
 make install || die "* cant install wine!"
 
-echo "* Some clean:"
+
 cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
+echo "* Some clean:"
 rm -r include && rm -r share/applications && rm -r share/man
+
+echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
+tar czf "wine-staging-${WINE_VERSION}.tar.gz" *
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 
-echo "* Strip all binaries and libraries:"
-find "${WORKDIR}/wine-staging" -type f -exec strip --strip-unneeded {} \;
-
-echo "* Compressing:"
-cd wine-staging
-tar czf "wine-staging-${WINE_VERSION}.tar.gz" *
-cd ..
 
 echo "Packing tar result file..."
 tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
