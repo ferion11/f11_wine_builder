@@ -37,34 +37,38 @@ echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-updates main restricted universe
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-proposed main restricted universe multiverse" >> /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
-apt-get -y update
-apt install -y --install-recommends software-properties-common || die "* apt software-properties-common erro!"
+apt-get -q -y update
+apt-get -q -y install software-properties-common || die "* apt software-properties-common erro!"
 
 # gcc-9 ppa:
 add-apt-repository ppa:ubuntu-toolchain-r/test
 
 echo "* Install deps:"
-apt-get -y update
-apt-get -y upgrade
-apt-get -y dist-upgrade
+apt-get -q -y update
+apt-get -q -y upgrade
+apt-get -q -y dist-upgrade
 
 #apt-get -y clean || die "* apt-get clean error!"
 #apt-get -y autoclean || die "* apt-get autoclean error!"
-apt install -y --install-recommends wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex bison || die "* apt basic erro!"
-apt install -y --install-recommends xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 || die "* main apt erro!"
-apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt purge error!"
+apt-get -q -y install wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex bison || die "* apt basic erro!"
+apt-get -q -y install xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 || die "* main apt erro!"
+apt-get -q -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt purge error!"
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
 mkdir "${WORKDIR}/build_libs"
 cd "${WORKDIR}/build_libs" || die "* Cant enter on dir build_libs!"
 
-echo "* downloading all:"
-wget "https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz"
-wget "https://github.com/FNA-XNA/FAudio/archive/${FAUDIO_VERSION}.tar.gz" -O "FAudio-${FAUDIO_VERSION}.tar.gz"
-wget "https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Headers-${VULKAN_VERSION}.tar.gz"
-wget "https://github.com/KhronosGroup/Vulkan-Loader/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Loader-${VULKAN_VERSION}.tar.gz"
-wget "https://github.com/KhronosGroup/SPIRV-Headers/archive/${SPIRV_VERSION}.tar.gz"  -O "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
+echo "* downloading SDL2:"
+wget -q "https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz"
+echo "* downloading FAudio:"
+wget -q "https://github.com/FNA-XNA/FAudio/archive/${FAUDIO_VERSION}.tar.gz" -O "FAudio-${FAUDIO_VERSION}.tar.gz"
+echo "* downloading Vulkan-Headers:"
+wget -q "https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Headers-${VULKAN_VERSION}.tar.gz"
+echo "* downloading Vulkan-Loader:"
+wget -q "https://github.com/KhronosGroup/Vulkan-Loader/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Loader-${VULKAN_VERSION}.tar.gz"
+echo "* downloading SPIRV-Headers:"
+wget -q "https://github.com/KhronosGroup/SPIRV-Headers/archive/${SPIRV_VERSION}.tar.gz"  -O "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
 git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
 
 echo "* extracting:"
@@ -90,7 +94,8 @@ build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
 # Need libvkd3d-dev package that refuse to install on bionic, so workaround:
-wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_5.0.1~bionic_i386.deb
+echo "* compiling and install vkd3d-proton>"
+wget -q https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_5.0.1~bionic_i386.deb
 dpkg -x wine-stable_5.0.1~bionic_i386.deb .
 cp ./opt/wine-stable/bin/widl /usr/bin/ || die "cant copy widl erro!"
 cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
@@ -130,7 +135,9 @@ echo "* Strip all binaries and libraries:"
 find "${WORKDIR}/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
-tar czvf "wine-staging-${WINE_VERSION}.tar.gz" wine-staging
+cd wine-staging
+tar czf "wine-staging-${WINE_VERSION}.tar.gz" *
+cd ..
 
 echo "Packing tar result file..."
 tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
