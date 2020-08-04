@@ -25,6 +25,11 @@ cat /etc/issue
 echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" >> /etc/apt/sources.list
 
+# add deps for wine:
+add-apt-repository -y ppa:cybermax-dexter/sdl2-backport
+wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+add-apt-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${CHROOT_DISTRO} main"
+
 echo "* Install deps:"
 apt-get -y update
 apt-get -y upgrade
@@ -34,7 +39,8 @@ apt-get -y dist-upgrade
 #apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt-get purge error!"
 #apt-get -y clean || die "* apt-get clean error!"
 #apt-get -y autoclean || die "* apt-get autoclean error!"
-apt install xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libfaudio0:i386 libfaudio-dev:i386 libvkd3d-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec58:i386 libswresample3:i386 libavutil56:i386
+apt install winehq-stable:i386 xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386
+# removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
 mkdir "$HOME/build_libs"
@@ -46,7 +52,7 @@ wget "https://github.com/FNA-XNA/FAudio/archive/${FAUDIO_VERSION}.tar.gz" -O "FA
 wget "https://github.com/KhronosGroup/Vulkan-Headers/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Headers-${VULKAN_VERSION}.tar.gz"
 wget "https://github.com/KhronosGroup/Vulkan-Loader/archive/v${VULKAN_VERSION}.tar.gz" -O "Vulkan-Loader-${VULKAN_VERSION}.tar.gz"
 wget "https://github.com/KhronosGroup/SPIRV-Headers/archive/${SPIRV_VERSION}.tar.gz"  -O "SPIRV-Headers-${SPIRV_VERSION}.tar.gz"
-#git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
+git clone --depth 1 https://github.com/HansKristian-Work/vkd3d-proton.git
 
 echo "* extracting:"
 tar xf "SDL2-${SDL2_VERSION}.tar.gz" || die "* extract tar.gz error!"
@@ -70,16 +76,12 @@ build_and_install "FAudio-${FAUDIO_VERSION}"
 build_and_install "Vulkan-Headers-${VULKAN_VERSION}"
 build_and_install "Vulkan-Loader-${VULKAN_VERSION}"
 build_and_install "SPIRV-Headers-${SPIRV_VERSION}"
-# Need libvkd3d-dev package that refuse to install on bionic
-#echo "* widl workaround for vkd3d-proton"
-#wget https://dl.winehq.org/wine-builds/ubuntu/dists/bionic/main/binary-i386/wine-stable_4.0.3~bionic_i386.deb
-#dpkg -x wine.deb .
-#cp ./opt/wine-stable/bin/widl /usr/bin/
-#cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
-#./autogen.sh
-#./configure || die "* vkd3d-proton configure error!"
-#make -j"$(nproc)" || die "* vkd3d-proton make error!"
-#make install || die "* vkd3d-proton install error!"
+# Need libvkd3d-dev package that refuse to install on bionic, using winehq-stable:i386
+cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
+./autogen.sh
+./configure || die "* vkd3d-proton configure error!"
+make -j"$(nproc)" || die "* vkd3d-proton make error!"
+make install || die "* vkd3d-proton install error!"
 
 cd "$HOME" || die "Cant enter on $HOME dir!"
 rm -rf "$HOME/build_libs"
