@@ -50,7 +50,7 @@ apt-get -y dist-upgrade
 
 #apt-get -y clean || die "* apt-get clean error!"
 #apt-get -y autoclean || die "* apt-get autoclean error!"
-apt install -y --install-recommends wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex || die "* apt basic erro!"
+apt install -y --install-recommends wget git sudo make cmake gcc-9 g++-9 tar gzip xz-utils bzip2 gawk sed flex bison || die "* apt basic erro!"
 apt install -y --install-recommends xserver-xorg-dev:i386 libfreetype6-dev:i386 libfontconfig1-dev:i386 libglu1-mesa-dev:i386 libosmesa6-dev:i386 libvulkan-dev:i386 libvulkan1:i386 libpulse-dev:i386 libopenal-dev:i386 libncurses-dev:i386 libgnutls28-dev:i386 libtiff-dev:i386 libldap-dev:i386 libcapi20-dev:i386 libpcap-dev:i386 libxml2-dev:i386 libmpg123-dev:i386 libgphoto2-dev:i386 libsane-dev:i386 libcupsimage2-dev:i386 libkrb5-dev:i386 libgsm1-dev:i386 libxslt1-dev:i386 libv4l-dev:i386 libgstreamer-plugins-base1.0-dev:i386 libudev-dev:i386 libxi-dev:i386 liblcms2-dev:i386 libibus-1.0-dev:i386 libsdl2-dev:i386 ocl-icd-opencl-dev:i386 libxinerama-dev:i386 libxcursor-dev:i386 libxrandr-dev:i386 libxcomposite-dev:i386 libavcodec57:i386 libavcodec-dev:i386 libswresample2:i386 libswresample-dev:i386 libavutil55:i386 libavutil-dev:i386 libusb-1.0-0-dev:i386 libgcrypt20-dev:i386 libasound2-dev:i386 libjpeg8-dev:i386 libldap2-dev:i386 libx11-dev:i386 zlib1g-dev:i386 libcups2:i386 libdbus-1-3:i386 libicu-dev:i386 libncurses5:i386 || die "* main apt erro!"
 apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --autoremove || die "* apt purge error!"
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
