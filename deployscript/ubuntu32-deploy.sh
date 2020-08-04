@@ -21,6 +21,8 @@ die() { echo >&2 "$*"; exit 1; };
 #==============================================================================
 cat /etc/issue
 
+apt-get install -y software-properties-common wget sudo || die "* first apt-get erro!"
+
 # Ubuntu Main Repos:
 echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" >> /etc/apt/sources.list
