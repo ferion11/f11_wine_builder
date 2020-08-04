@@ -123,7 +123,7 @@ mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
 #./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-staging"
 ./configure --prefix "${WORKDIR}/wine-staging"
-make -j"$(nproc)" || die "* cant make wine!"
+make -j"$(nproc)" --no-print-directory || die "* cant make wine!"
 make install || die "* cant install wine!"
 
 cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
