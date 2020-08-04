@@ -54,8 +54,8 @@ apt-get -y purge libvulkan-dev libvulkan1 libsdl2-dev libsdl2-2.0-0 --purge --au
 # removed  libfaudio0:i386 libfaudio-dev:i386 (building it below), libvkd3d-dev:i386
 
 echo "* compile and install more deps:"
-mkdir "$HOME/build_libs"
-cd "$HOME/build_libs" || die "* Cant enter on dir build_libs!"
+mkdir "/tmp/build_libs"
+cd "/tmp/build_libs" || die "* Cant enter on dir build_libs!"
 
 echo "* downloading all:"
 wget "https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz"
@@ -97,8 +97,8 @@ cd vkd3d-proton || die "* Cant enter on vkd3d-proton dir!"
 make -j"$(nproc)" || die "* vkd3d-proton make error!"
 make install || die "* vkd3d-proton install error!"
 
-cd "$HOME" || die "Cant enter on $HOME dir!"
-rm -rf "$HOME/build_libs"
+cd "/tmp" || die "Cant enter on /tmp dir!"
+rm -rf "/tmp/build_libs"
 #==============================================================================
 
 echo "* Wine part:"
@@ -109,23 +109,23 @@ mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
 wget "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
 tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="$HOME/wine-src" --all || die "* Cant apply the wine-staging patches!"
+"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="/tmp/wine-src" --all || die "* Cant apply the wine-staging patches!"
 
 echo "* Compiling:"
 mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
-#./configure "${WINE_BUILD_OPTIONS}" --prefix "$HOME/wine-staging"
-./configure --prefix "$HOME/wine-staging"
+#./configure "${WINE_BUILD_OPTIONS}" --prefix "/tmp/wine-staging"
+./configure --prefix "/tmp/wine-staging"
 make -j"$(nproc)" || die "* cant make wine!"
 make install || die "* cant install wine!"
 
 echo "* Some clean:"
-cd "$HOME/wine-staging" || die "* Cant enter on the wine-staging dir!"
+cd "/tmp/wine-staging" || die "* Cant enter on the wine-staging dir!"
 rm -r include && rm -r share/applications && rm -r share/man
-cd "$HOME" || die "Cant enter on $HOME dir!"
+cd "/tmp" || die "Cant enter on /tmp dir!"
 
 echo "* Strip all binaries and libraries:"
-find "$HOME/wine-staging" -type f -exec strip --strip-unneeded {} \;
+find "/tmp/wine-staging" -type f -exec strip --strip-unneeded {} \;
 
 echo "* Compressing:"
 tar czvf "wine-staging-${WINE_VERSION}.tar.gz" wine-staging
