@@ -24,6 +24,17 @@ cat /etc/issue
 # Ubuntu Main Repos:
 echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" > /etc/apt/sources.list
 echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO} main restricted universe multiverse" >> /etc/apt/sources.list
+
+###### Ubuntu Update Repos:
+echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO}-security main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO}-updates main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO}-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb ${CHROOT_MIRROR} ${CHROOT_DISTRO}-backports main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-security main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-updates main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-proposed main restricted universe multiverse" >> /etc/apt/sources.list
+echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-backports main restricted universe multiverse" >> /etc/apt/sources.list
+
 apt-get -y update
 apt install -y --install-recommends software-properties-common || die "* apt software-properties-common erro!"
 
