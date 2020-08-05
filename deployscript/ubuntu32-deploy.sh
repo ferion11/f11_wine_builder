@@ -118,6 +118,7 @@ wget -q "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.t
 tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 echo "* Applying staging patchs..."
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
+# https://github.com/zfigura/wine/blob/esync/README.esync
 # https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
 echo "* Applying esync patch"
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
