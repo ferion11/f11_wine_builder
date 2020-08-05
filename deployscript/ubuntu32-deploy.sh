@@ -122,7 +122,7 @@ echo "* Compiling:"
 mkdir "wine-staging"
 cd wine-src || die "* Cant enter on the wine-src dir!"
 #./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-staging"
-./configure --prefix "${WORKDIR}/wine-staging"
+./configure --prefix "${WORKDIR}/wine-staging" --disable-tests
 make -j"$(nproc)" --no-print-directory || die "* cant make wine!"
 make install || die "* cant install wine!"
 
