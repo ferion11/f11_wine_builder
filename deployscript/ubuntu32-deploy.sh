@@ -120,7 +120,7 @@ echo "* Applying staging patchs..."
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
 # https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
 #echo "* Applying esync patch"; there is no usable esync in 5.10 staging patches anymore, Due to the current and ongoing work in ntdll.so
-#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
+#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
 
 echo "* Compiling..."
 mkdir "wine-staging"
@@ -130,12 +130,23 @@ cd wine-src || die "* Cant enter on the wine-src dir!"
 make -j"$(nproc)" --no-print-directory || die "* cant make wine!"
 make install --no-print-directory || die "* cant install wine!"
 
+#-------------------------------------------------
 cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
+
 echo "* Cleaning..."
 rm -r include && rm -r share/applications && rm -r share/man
+
+echo "* disabling winemenubuilder.exe..."
+sed 's/winemenubuilder.exe -a -r/winemenubuilder.exe -r/g' ./share/wine/wine.inf -i
+
+echo "* disabling FileOpenAssociations..."
+sed 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' ./share/wine/wine.inf -i
+
 echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
 tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
+
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
+#-------------------------------------------------
 
 echo "Packing tar result file..."
 tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz" "staging_patches.txt"
