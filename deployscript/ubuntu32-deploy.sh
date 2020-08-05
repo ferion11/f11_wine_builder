@@ -39,7 +39,7 @@ echo "deb-src ${CHROOT_MIRROR} ${CHROOT_DISTRO}-backports main restricted univer
 
 apt-get -q -y update >/dev/null
 echo "* Install software-properties-common:"
-apt-get -q -y install software-properties-common >/dev/null || die "* apt software-properties-common erro!"
+apt-get -q -y install software-properties-common apt-utils >/dev/null || die "* apt software-properties-common and apt-utils erro!"
 
 # gcc-9 ppa:
 add-apt-repository ppa:ubuntu-toolchain-r/test >/dev/null
