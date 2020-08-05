@@ -118,6 +118,8 @@ wget -q "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.t
 tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 echo "* Applying staging patchs..."
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
+#echo "* Applying esync patch"; there is no usable esync in 5.10 staging patches anymore, Due to the current and ongoing work in ntdll.so
+#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
 
 echo "* Compiling..."
 mkdir "wine-staging"
