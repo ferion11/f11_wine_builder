@@ -137,11 +137,12 @@ cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
 echo "* Cleaning..."
 rm -r include && rm -r share/applications && rm -r share/man
 
-echo "* disabling winemenubuilder.exe..."
-sed 's/winemenubuilder.exe -a -r/winemenubuilder.exe -r/g' ./share/wine/wine.inf -i
-
-echo "* disabling FileOpenAssociations..."
-sed 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' ./share/wine/wine.inf -i
+# Will do it on he appimage making only, because one can use this native feature
+#echo "* disabling winemenubuilder.exe..."
+#sed 's/winemenubuilder.exe -a -r/winemenubuilder.exe -r/g' ./share/wine/wine.inf -i
+#
+#echo "* disabling FileOpenAssociations..."
+#sed 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' ./share/wine/wine.inf -i
 
 echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
 tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
