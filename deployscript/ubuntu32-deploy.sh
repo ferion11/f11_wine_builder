@@ -119,8 +119,8 @@ tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 echo "* Applying staging patchs..."
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
 # https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
-#echo "* Applying esync patch"; there is no usable esync in 5.10 staging patches anymore, Due to the current and ongoing work in ntdll.so
-#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
+echo "* Applying esync patch"; there is no usable esync in 5.10 staging patches anymore, Due to the current and ongoing work in ntdll.so
+"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
 
 echo "* Compiling..."
 mkdir "wine-staging"
@@ -149,5 +149,5 @@ cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 #-------------------------------------------------
 
 echo "Packing tar result file..."
-tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz" "staging_patches.txt"
+tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz" staging_patches.txt extra_patches.txt
 echo "* result.tar size: $(du -hs result.tar)"
