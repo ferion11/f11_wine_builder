@@ -116,7 +116,8 @@ mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
 wget -q "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
 tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all || die "* Cant apply the wine-staging patches!"
+echo "* Applying staging patchs:"
+"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
 
 echo "* Compiling:"
 mkdir "wine-staging"
@@ -134,5 +135,5 @@ tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 
 echo "Packing tar result file..."
-tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz"
+tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz" "staging_patches.txt"
 echo "* result.tar size: $(du -hs result.tar)"
