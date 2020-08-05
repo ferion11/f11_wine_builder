@@ -120,8 +120,8 @@ echo "* Applying staging patchs..."
 "./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
 # https://github.com/zfigura/wine/blob/esync/README.esync
 # https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
-echo "* Applying esync patch"
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
+#echo "* Applying esync patch"
+#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
 
 echo "* Compiling..."
 mkdir "wine-staging"
