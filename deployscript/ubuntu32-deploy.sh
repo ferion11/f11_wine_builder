@@ -130,7 +130,7 @@ cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
 echo "* Some clean:"
 rm -r include && rm -r share/applications && rm -r share/man
 echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
-tar czf "wine-staging-${WINE_VERSION}.tar.gz" *
+tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 
 echo "Packing tar result file..."
