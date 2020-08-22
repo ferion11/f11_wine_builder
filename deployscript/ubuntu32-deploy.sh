@@ -1,6 +1,6 @@
 #!/bin/bash
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
-export WINE_VERSION="5.11"
+export WINE_VERSION="5.15"
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
 export VULKAN_VERSION="1.2.145"
