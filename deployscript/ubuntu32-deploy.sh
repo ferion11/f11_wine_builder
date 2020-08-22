@@ -1,6 +1,7 @@
 #!/bin/bash
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 export WINE_VERSION="5.15"
+export STAGING_VERSION="${WINE_VERSION}.2"
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
 export VULKAN_VERSION="1.2.145"
@@ -114,14 +115,14 @@ wget -q "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
 tar xf "wine-${WINE_VERSION}.tar.xz" || die "* cant extract wine!"
 mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
-wget -q "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
-tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
+wget -q "https://github.com/wine-staging/wine-staging/archive/v${STAGING_VERSION}.tar.gz"
+tar xf "v${STAGING_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
 echo "* Applying staging patchs..."
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
+"./wine-staging-${STAGING_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
 # https://github.com/zfigura/wine/blob/esync/README.esync
 # https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
 #echo "* Applying esync patch"
-#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
+#"./wine-staging-${STAGING_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
 
 echo "* Compiling..."
 mkdir "wine-staging"
