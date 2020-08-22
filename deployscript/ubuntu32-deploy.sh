@@ -1,6 +1,6 @@
 #!/bin/bash
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
-export WINE_VERSION="5.11"
+export PROTON_VERSION="5.11"
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
 export VULKAN_VERSION="1.2.145"
@@ -109,30 +109,23 @@ rm -rf "${WORKDIR}/build_libs"
 #==============================================================================
 
 echo "* Wine part:"
-echo "* Getting wine source and patch..."
-wget -q "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
-tar xf "wine-${WINE_VERSION}.tar.xz" || die "* cant extract wine!"
-mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
+echo "* Getting wine source from ValveSoftware..."
+wget -q "https://github.com/ValveSoftware/wine/archive/wine-${PROTON_VERSION}.tar.gz"
+tar xf "wine-${PROTON_VERSION}.tar.gz" || die "* cant extract wine!"
+mv "wine-wine-${PROTON_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
-wget -q "https://github.com/wine-staging/wine-staging/archive/v${WINE_VERSION}.tar.gz"
-tar xf "v${WINE_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
-echo "* Applying staging patchs..."
-"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all >"${WORKDIR}/staging_patches.txt" || die "* Cant apply the wine-staging patches!"
-# https://github.com/zfigura/wine/blob/esync/README.esync
-# https://github.com/wine-staging/wine-staging/blob/master/patches/eventfd_synchronization/definition
-#echo "* Applying esync patch"
-#"./wine-staging-${WINE_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" eventfd_synchronization >"${WORKDIR}/extra_patches.txt" || die "* Cant apply the eventfd_synchronization patche!"
+#echo "* Applying patchs..."
 
 echo "* Compiling..."
-mkdir "wine-staging"
+mkdir "wine-proton"
 cd wine-src || die "* Cant enter on the wine-src dir!"
-#./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-staging"
-./configure --prefix "${WORKDIR}/wine-staging" --disable-tests
+#./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-proton"
+./configure --prefix "${WORKDIR}/wine-proton" --disable-tests
 make -j"$(nproc)" --no-print-directory || die "* cant make wine!"
 make install --no-print-directory || die "* cant install wine!"
 
 #-------------------------------------------------
-cd "${WORKDIR}/wine-staging" || die "* Cant enter on the wine-staging dir!"
+cd "${WORKDIR}/wine-proton" || die "* Cant enter on the wine-proton dir!"
 
 echo "* Cleaning..."
 rm -r include && rm -r share/applications && rm -r share/man
@@ -144,12 +137,12 @@ rm -r include && rm -r share/applications && rm -r share/man
 #echo "* disabling FileOpenAssociations..."
 #sed 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' ./share/wine/wine.inf -i
 
-echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
-tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
+echo "* Compressing: wine-proton-${PROTON_VERSION}.tar.gz"
+tar czf "${WORKDIR}/wine-proton-${PROTON_VERSION}.tar.gz" *
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 #-------------------------------------------------
 
 echo "Packing tar result file..."
-tar cvf result.tar "wine-staging-${WINE_VERSION}.tar.gz" staging_patches.txt extra_patches.txt
+tar cvf result.tar "wine-proton-${PROTON_VERSION}.tar.gz"
 echo "* result.tar size: $(du -hs result.tar)"
