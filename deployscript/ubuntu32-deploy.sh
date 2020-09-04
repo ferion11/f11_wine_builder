@@ -1,6 +1,9 @@
 #!/bin/bash
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
-export PROTON_VERSION="5.11"
+# https://github.com/Tk-Glitch/wine-tkg/commits/master
+export TKG_VERSION="5.11"
+export TKG_GIT_COMMIT="1aa9bfcd7996262e0b99af941bb719f7efe7bf9e"
+export TKG_SRC_FILENAME="wine-tkg-v${TKG_VERSION}-src.tar.gz"
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
 export VULKAN_VERSION="1.2.145"
@@ -109,23 +112,23 @@ rm -rf "${WORKDIR}/build_libs"
 #==============================================================================
 
 echo "* Wine part:"
-echo "* Getting wine source from ValveSoftware..."
-wget -q "https://github.com/ValveSoftware/wine/archive/wine-${PROTON_VERSION}.tar.gz"
-tar xf "wine-${PROTON_VERSION}.tar.gz" || die "* cant extract wine!"
-mv "wine-wine-${PROTON_VERSION}" "wine-src" || die "* cant rename wine-src!"
+echo "* Getting wine source from Tk-Glitch..."
+wget -nv "https://github.com/Tk-Glitch/wine-tkg/archive/${TKG_GIT_COMMIT}.tar.gz" -O "${TKG_SRC_FILENAME}"
+tar xf "${TKG_SRC_FILENAME}" || die "* cant extract wine!"
+mv "wine-tkg-${TKG_GIT_COMMIT}" "wine-src" || die "* cant rename wine-src!"
 
 #echo "* Applying patchs..."
 
 echo "* Compiling..."
-mkdir "wine-proton"
+mkdir "wine-tkg"
 cd wine-src || die "* Cant enter on the wine-src dir!"
-#./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-proton"
-./configure --prefix "${WORKDIR}/wine-proton" --disable-tests
+#./configure "${WINE_BUILD_OPTIONS}" --prefix "${WORKDIR}/wine-tkg"
+./configure --prefix "${WORKDIR}/wine-tkg" --disable-tests
 make -j"$(nproc)" --no-print-directory || die "* cant make wine!"
 make install --no-print-directory || die "* cant install wine!"
 
 #-------------------------------------------------
-cd "${WORKDIR}/wine-proton" || die "* Cant enter on the wine-proton dir!"
+cd "${WORKDIR}/wine-tkg" || die "* Cant enter on the wine-tkg dir!"
 
 echo "* Cleaning..."
 rm -r include && rm -r share/applications && rm -r share/man
@@ -137,12 +140,12 @@ rm -r include && rm -r share/applications && rm -r share/man
 #echo "* disabling FileOpenAssociations..."
 #sed 's|    LicenseInformation|    LicenseInformation,\\\n    FileOpenAssociations|g;$a \\n[FileOpenAssociations]\nHKCU,Software\\Wine\\FileOpenAssociations,"Enable",,"N"' ./share/wine/wine.inf -i
 
-echo "* Compressing: wine-proton-${PROTON_VERSION}.tar.gz"
-tar czf "${WORKDIR}/wine-proton-${PROTON_VERSION}.tar.gz" *
+echo "* Compressing: wine-tkg-${TKG_VERSION}.tar.gz"
+tar czf "${WORKDIR}/wine-tkg-${TKG_VERSION}.tar.gz" *
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 #-------------------------------------------------
 
 echo "Packing tar result file..."
-tar cvf result.tar "wine-proton-${PROTON_VERSION}.tar.gz"
+tar cvf result.tar "wine-tkg-${TKG_VERSION}.tar.gz"
 echo "* result.tar size: $(du -hs result.tar)"
