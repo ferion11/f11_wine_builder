@@ -1,8 +1,8 @@
 #!/bin/bash
 #export WINE_BUILD_OPTIONS="--without-curses --without-oss --without-mingw --disable-winemenubuilder --disable-win16 --disable-tests"
 # https://github.com/Tk-Glitch/wine-tkg/commits/master
-export TKG_VERSION="5.11"
-export TKG_GIT_COMMIT="1aa9bfcd7996262e0b99af941bb719f7efe7bf9e"
+export TKG_VERSION="5.16"
+export TKG_GIT_COMMIT="790da7c7df1c802b912a57c3b798d640f9c1e397"
 export TKG_SRC_FILENAME="wine-tkg-v${TKG_VERSION}-src.tar.gz"
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
