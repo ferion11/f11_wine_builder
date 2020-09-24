@@ -10,6 +10,8 @@ cat /etc/issue
 WORKDIR=$(pwd)
 echo "* Working inside ${WORKDIR}"
 
+echo "* Skipping compilation. Using native ones"; exit 0
+
 echo "* compile and install more deps..."
 mkdir "${WORKDIR}/build_libs"
 cd "${WORKDIR}/build_libs" || die "* Cant enter on dir build_libs!"
