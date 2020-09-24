@@ -1,6 +1,0 @@
-FROM i386/ubuntu:bionic
-
-COPY . /srv/ubuntu32
-
-WORKDIR /srv/ubuntu32
-RUN /srv/ubuntu32/deployscript/ubuntu32-deploy.sh
