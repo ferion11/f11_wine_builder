@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - 'master'
-      - 'last'
+      - 'proton'
   pull_request:
     branches:
       - 'master'
-      - 'last'
+      - 'proton'
 
 jobs:
   build:
