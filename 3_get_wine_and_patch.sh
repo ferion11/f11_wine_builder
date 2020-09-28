@@ -22,6 +22,6 @@ mv "wine-tkg-${TKG_GIT_COMMIT}" "wine-src" || die "* cant rename wine-src!"
 echo "* Applying patchs..."
 #"./wine-staging-${STAGING_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all || die "* Cant apply the wine-staging patches!"
 cd "${WORKDIR}/wine-src" || die "Cant enter on ${WORKDIR}/wine-src dir!"
-patch -p1 < "${WORKDIR}/patches/timeout_infinite_fix.patch" || die "Cant apply the timeout_infinite_fix.patch!"
+#patch -p1 < "${WORKDIR}/patches/timeout_infinite_fix.patch" || die "Cant apply the timeout_infinite_fix.patch!"
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
