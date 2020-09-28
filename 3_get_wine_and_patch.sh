@@ -11,7 +11,7 @@ WORKDIR=$(pwd)
 echo "* Working inside ${WORKDIR}"
 
 echo "* Wine part:"
-echo "* Getting wine source from ValveSoftware and patch..."
+echo "* Getting wine source from Tk-Glitch and patch..."
 wget -q "https://github.com/Tk-Glitch/wine-tkg/archive/${TKG_GIT_COMMIT}.tar.gz" -O "${TKG_SRC_FILENAME}"
 tar xf "${TKG_SRC_FILENAME}" || die "* cant extract wine!"
 mv "wine-tkg-${TKG_GIT_COMMIT}" "wine-src" || die "* cant rename wine-src!"
