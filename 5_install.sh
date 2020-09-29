@@ -29,8 +29,8 @@ sudo rm -r include && sudo rm -r share/applications && sudo rm -r share/man
 
 rm -f "${WORKDIR}"/*.tar.gz
 
-echo "* Compressing: wine-staging-${WINE_VERSION}.tar.gz"
-tar czf "${WORKDIR}/wine-staging-${WINE_VERSION}.tar.gz" *
+echo "* Compressing: wine-vanilla-${WINE_VERSION}.tar.gz"
+tar czf "${WORKDIR}/wine-vanilla-${WINE_VERSION}.tar.gz" *
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
 #mv *.tar.gz result/
