@@ -1,5 +1,5 @@
 #!/bin/bash
-export WINE_VERSION="5.18"
+export WINE_VERSION="5.17"
 export STAGING_VERSION="${WINE_VERSION}"
 
 export SDL2_VERSION="2.0.12"
