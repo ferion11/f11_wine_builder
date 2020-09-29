@@ -12,10 +12,16 @@ echo "* Working inside ${WORKDIR}"
 
 echo "* Wine part:"
 echo "* Getting wine source and patch..."
+
+# Using url of release:
 wget -q "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
 tar xf "wine-${WINE_VERSION}.tar.xz" || die "* cant extract wine!"
 mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
+# Using HASH:
+#wget -q "https://github.com/wine-mirror/wine/archive/${WINE_HASH}.tar.gz"
+#tar xf "${WINE_HASH}.tar.gz" || die "* cant extract wine!"
+#mv "wine-${WINE_HASH}" "wine-src" || die "* cant rename wine-src!"
 
 #wget -q "https://github.com/wine-staging/wine-staging/archive/v${STAGING_VERSION}.tar.gz"
 #tar xf "v${STAGING_VERSION}.tar.gz" || die "* cant extract wine-staging patchs!"
