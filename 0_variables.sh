@@ -1,8 +1,8 @@
 #!/bin/bash
 #export WINE_VERSION="5.16"
 # using source from: https://github.com/wine-mirror/wine
-# step 4
-export WINE_HASH="3395ee3631fe7088d33d5fd53f0e788741157e6a"
+# step 5
+export WINE_HASH="a9a08dbc3dd8b595888f6c6b066e6c8fd389771a"
 export WINE_VERSION="$(echo "${WINE_HASH}" | cut -c1-7)"
 export STAGING_VERSION="${WINE_VERSION}"
 
