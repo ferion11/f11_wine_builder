@@ -1,9 +1,9 @@
 #!/bin/bash
-#export WINE_VERSION="5.16"
+export WINE_VERSION="5.18"
 # using source from: https://github.com/wine-mirror/wine
-# step 8
-export WINE_HASH="4826900a30a431faa8bcc9e3f0007f794d8d15bb"
-export WINE_VERSION="$(echo "${WINE_HASH}" | cut -c1-7)"
+# wine-5.18 add_WINELDLIBRARY.patch test
+export WINE_HASH="9a6e5b23293fbad3bbdcd52007402a3b9a1cb99d"
+#export WINE_VERSION="$(echo "${WINE_HASH}" | cut -c1-7)"
 export STAGING_VERSION="${WINE_VERSION}"
 
 export SDL2_VERSION="2.0.12"

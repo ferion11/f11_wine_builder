@@ -1,0 +1,78 @@
+From 4f7f784ac5486da1955d125049aa00caea3f9035 Mon Sep 17 00:00:00 2001
+From: Hackerl <490021209@qq.com>
+Date: Wed, 12 Dec 2018 10:53:53 +0800
+Subject: [PATCH] Add Wine LD Library Environment Support
+
+---
+ libs/wine/config.c | 21 ++++++++++++++++++++-
+ loader/preloader.c | 10 +++++++---
+ 2 files changed, 27 insertions(+), 4 deletions(-)
+
+diff --git a/libs/wine/config.c b/libs/wine/config.c
+index 083e263ee3d..e89c2c63a95 100644
+--- a/libs/wine/config.c
++++ b/libs/wine/config.c
+@@ -562,7 +562,26 @@ static void preloader_exec( char **argv, int use_preloader )
+         free( new_argv );
+         free( full_name );
+     }
+-    execv( argv[0], argv );
++    else
++    {
++        char * wineloader = getenv("WINELDLIBRARY");
++
++        if (wineloader == NULL)
++            execv( argv[0], argv );
++
++        char **last_arg = argv;
++
++        while (*last_arg) last_arg++;
++
++        char ** new_argv = xmalloc( (last_arg - argv + 2) * sizeof(*argv) );
++        memcpy( new_argv + 1, argv, (last_arg - argv + 1) * sizeof(*argv) );
++
++        new_argv[0] = wineloader;
++
++        execv(wineloader, new_argv);
++
++        free( new_argv );
++    }
+ }
+ 
+ /* exec a wine internal binary (either the wine loader or the wine server) */
+diff --git a/loader/preloader.c b/loader/preloader.c
+index 13a6ad86b20..55af8383773 100644
+--- a/loader/preloader.c
++++ b/loader/preloader.c
+@@ -1255,7 +1255,7 @@ void* wld_start( void **stack )
+ {
+     long i, *pargc;
+     char **argv, **p;
+-    char *interp, *reserve = NULL;
++    char *interp = NULL, *reserve = NULL;
+     struct wld_auxv new_av[8], delete_av[3], *av;
+     struct wld_link_map main_binary_map, ld_so_map;
+     struct wine_preload_info **wine_main_preload_info;
+@@ -1270,8 +1270,11 @@ void* wld_start( void **stack )
+     /* skip over the environment */
+     while (*p)
+     {
+-        static const char res[] = "WINEPRELOADRESERVE=";
++        static const char res[] = "WINEPRELOADRESERVE=", loader[] = "WINELDLIBRARY=";
++
+         if (!wld_strncmp( *p, res, sizeof(res)-1 )) reserve = *p + sizeof(res) - 1;
++        if (!wld_strncmp( *p, loader, sizeof(loader)-1 )) interp = *p + sizeof(loader) - 1;
++
+         p++;
+     }
+ 
+@@ -1323,7 +1326,8 @@ void* wld_start( void **stack )
+     map_so_lib( argv[1], &main_binary_map );
+ 
+     /* load the ELF interpreter */
+-    interp = (char *)main_binary_map.l_addr + main_binary_map.l_interp;
++    if (interp == NULL)
++        interp = (char *)main_binary_map.l_addr + main_binary_map.l_interp;
+     map_so_lib( interp, &ld_so_map );
+ 
+     /* store pointer to the preload info into the appropriate main binary variable */
