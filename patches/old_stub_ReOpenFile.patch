@@ -1,0 +1,37 @@
+diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
+index 3da50d2c95..7ff925710c 100644
+--- a/dlls/kernelbase/file.c
++++ b/dlls/kernelbase/file.c
+@@ -43,6 +43,8 @@
+ 
+ WINE_DEFAULT_DEBUG_CHANNEL(file);
+ 
++extern DWORD WINAPI GetFinalPathNameByHandleW(  HANDLE ,LPWSTR ,DWORD , DWORD);
++
+ const WCHAR windows_dir[] = {'C',':','\\','w','i','n','d','o','w','s',0};
+ const WCHAR system_dir[] = {'C',':','\\','w','i','n','d','o','w','s','\\','s','y','s','t','e','m','3','2',0};
+ 
+@@ -1815,7 +1817,22 @@ HANDLE WINAPI DECLSPEC_HOTPATCH OpenFileById( HANDLE handle, LPFILE_ID_DESCRIPTO
+ HANDLE WINAPI /* DECLSPEC_HOTPATCH */ ReOpenFile( HANDLE handle, DWORD access, DWORD sharing, DWORD flags )
+ {
+     FIXME( "(%p, %d, %d, %d): stub\n", handle, access, sharing, flags );
+-    return INVALID_HANDLE_VALUE;
++
++    WCHAR name[MAX_PATH];
++    DWORD size = MAX_PATH;
++    HANDLE h;
++    DWORD  ret;
++
++    ret = 0;
++    ret = GetFinalPathNameByHandleW( handle, name, size, VOLUME_NAME_DOS );
++    if(ret)
++        FIXME("\n name is: %s\n", debugstr_w(name));
++    else
++        return INVALID_HANDLE_VALUE;
++
++    h = CreateFileW(name, access, sharing, NULL, OPEN_EXISTING, flags, NULL);
++
++    return h;
+ }
+ 
+ 
