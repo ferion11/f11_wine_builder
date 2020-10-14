@@ -1,9 +1,9 @@
 #!/bin/bash
-#export WINE_VERSION="5.18"
+export WINE_VERSION="4.16"
 # using source from: https://github.com/wine-mirror/wine
 # wine-4.16 update test using stub now
 export WINE_HASH="c323ef47c77fec10a46af5f4fed1f23fcda29da8"
-export WINE_VERSION="$(echo "${WINE_HASH}" | cut -c1-7)"
+#export WINE_VERSION="$(echo "${WINE_HASH}" | cut -c1-7)"
 export STAGING_VERSION="${WINE_VERSION}"
 
 export SDL2_VERSION="2.0.12"
