@@ -29,7 +29,10 @@ echo "* Applying patchs..."
 #"./wine-staging-${STAGING_VERSION}/patches/patchinstall.sh" DESTDIR="${WORKDIR}/wine-src" --all || die "* Cant apply the wine-staging patches!"
 cd "${WORKDIR}/wine-src" || die "Cant enter on ${WORKDIR}/wine-src dir!"
 #patch -p1 < "${WORKDIR}/patches/timeout_infinite_fix.patch" || die "Cant apply the timeout_infinite_fix.patch!"
-echo "* Applying add_WINELDLIBRARY.patch..."
-patch -p1 < "${WORKDIR}/patches/add_WINELDLIBRARY.patch" || die "Cant apply the add_WINELDLIBRARY.patch!"
+#echo "* Applying add_WINELDLIBRARY.patch..."
+#patch -p1 < "${WORKDIR}/patches/add_WINELDLIBRARY.patch" || die "Cant apply the add_WINELDLIBRARY.patch!"
+echo "* Applying Implement_ReOpenFile.patch..."
+patch -p1 < "${WORKDIR}/patches/Implement_ReOpenFile.patch" || die "Cant apply the Implement_ReOpenFile.patch!"
+
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
