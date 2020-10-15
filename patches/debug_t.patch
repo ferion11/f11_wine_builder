@@ -1,0 +1,17 @@
+diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
+index b265866ac5..712138bd75 100644
+--- a/dlls/kernelbase/file.c
++++ b/dlls/kernelbase/file.c
+@@ -3288,10 +3288,10 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
+         SetLastError(ERROR_INVALID_PARAMETER);
+         return INVALID_HANDLE_VALUE;
+     }
+-
++/*
+     if (attributes & FILE_FLAG_DELETE_ON_CLOSE)
+         access |= DELETE;
+-
++*/
+     InitializeObjectAttributes( &attr, &empty, OBJ_CASE_INSENSITIVE, handle, NULL );
+     if (attributes & SECURITY_SQOS_PRESENT)
+     {

@@ -33,8 +33,8 @@ cd "${WORKDIR}/wine-src" || die "Cant enter on ${WORKDIR}/wine-src dir!"
 #patch -p1 < "${WORKDIR}/patches/add_WINELDLIBRARY.patch" || die "Cant apply the add_WINELDLIBRARY.patch!"
 #echo "* Applying Implement_ReOpenFile.patch..."
 #patch -p1 < "${WORKDIR}/patches/Implement_ReOpenFile.patch" || die "Cant apply the Implement_ReOpenFile.patch!"
-#echo "* Applying old_stub_ReOpenFile.patch..."
-#patch -p1 < "${WORKDIR}/patches/old_stub_ReOpenFile.patch" || die "Cant apply the old_stub_ReOpenFile.patch!"
+echo "* Applying debug_t.patch..."
+patch -p1 < "${WORKDIR}/patches/debug_t.patch" || die "Cant apply the debug_t.patch!"
 
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
