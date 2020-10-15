@@ -1,5 +1,5 @@
 diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
-index b265866ac5..997a49df4b 100644
+index b265866ac5..72b9d65cc2 100644
 --- a/dlls/kernelbase/file.c
 +++ b/dlls/kernelbase/file.c
 @@ -3282,15 +3282,24 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
@@ -29,15 +29,9 @@ index b265866ac5..997a49df4b 100644
  
      InitializeObjectAttributes( &attr, &empty, OBJ_CASE_INSENSITIVE, handle, NULL );
      if (attributes & SECURITY_SQOS_PRESENT)
-@@ -3301,9 +3310,15 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
-         qos.EffectiveOnly = (attributes & SECURITY_EFFECTIVE_ONLY) != 0;
+@@ -3302,8 +3311,9 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
          attr.SecurityQualityOfService = &qos;
      }
-+	
-+    if (attr & FILE_ATTRIBUTE_DIRECTORY)
-+		printf("ReOpenFile DEBUG attr: is a directory\n");
-+	else
-+		printf("ReOpenFile DEBUG attr: is a file\n");
  
 -    status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES, &attr, &io, NULL,
 +    status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES | FILE_WRITE_ATTRIBUTES, &attr, &io, NULL,

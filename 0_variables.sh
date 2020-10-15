@@ -22,3 +22,9 @@ export UBUNTU_ARCH=i386
 export CFLAGS="-march=nehalem -O2 -pipe -ftree-vectorize -fno-stack-protector"
 export CXXFLAGS="${CFLAGS}"
 export LDFLAGS="-Wl,-O1,--sort-common,--as-needed"
+
+# ccache:
+WORKDIR=$(pwd)
+export CCACHE_DIR="${WORKDIR}/ccache"
+export CC="ccache gcc"
+export CROSSCC="ccache i686-w64-mingw32-gcc"
