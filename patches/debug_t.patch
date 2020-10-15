@@ -23,7 +23,7 @@ index b265866ac5..a83c8424c5 100644
      status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES, &attr, &io, NULL,
                             0, sharing, FILE_OPEN, get_nt_file_options( attributes ), NULL, 0 );
 +*/
-+    status = NtOpenFile( &file, access | SYNCHRONIZE | FILE_READ_DATA | FILE_READ_ATTRIBUTES | FILE_WRITE_DATA | FILE_WRITE_ATTRIBUTES | FILE_APPEND_DATA,
++    status = NtOpenFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES | FILE_WRITE_ATTRIBUTES,
 +                           &attr, &io, sharing, get_nt_file_options( attributes ));
 +
      if (!set_ntstatus( status ))
