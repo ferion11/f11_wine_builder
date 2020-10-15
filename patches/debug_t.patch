@@ -1,31 +1,48 @@
 diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
-index b265866ac5..a83c8424c5 100644
+index b265866ac5..997a49df4b 100644
 --- a/dlls/kernelbase/file.c
 +++ b/dlls/kernelbase/file.c
-@@ -3289,9 +3289,11 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
+@@ -3282,15 +3282,24 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
+     HANDLE file;
+ 
+     TRACE("handle %p, access %#x, sharing %#x, attributes %#x.\n", handle, access, sharing, attributes);
+-
++printf("\n======= ReOpenFile DEBUG: =======\n");
++printf("ReOpenFile DEBUG trace: handle %p, access %#x, sharing %#x, attributes %#x.\n", handle, access, sharing, attributes);
+     if (attributes & 0x7ffff) /* FILE_ATTRIBUTE_* flags are invalid */
+     {
++		printf("ReOpenFile DEBUG: invalid attributes\n");
+         SetLastError(ERROR_INVALID_PARAMETER);
          return INVALID_HANDLE_VALUE;
      }
  
+-    if (attributes & FILE_FLAG_DELETE_ON_CLOSE)
++    if (attributes & FILE_ATTRIBUTE_DIRECTORY)
++		printf("ReOpenFile DEBUG attributes: is a directory\n");
++	else
++		printf("ReOpenFile DEBUG attributes: is a file\n");
 +
-     if (attributes & FILE_FLAG_DELETE_ON_CLOSE)
++    if (attributes & FILE_FLAG_DELETE_ON_CLOSE) {
++		printf("ReOpenFile DEBUG: FILE_FLAG_DELETE_ON_CLOSE add DELETE to access\n");
          access |= DELETE;
++	}
  
-+
      InitializeObjectAttributes( &attr, &empty, OBJ_CASE_INSENSITIVE, handle, NULL );
      if (attributes & SECURITY_SQOS_PRESENT)
-     {
-@@ -3301,9 +3303,13 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
+@@ -3301,9 +3310,15 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
          qos.EffectiveOnly = (attributes & SECURITY_EFFECTIVE_ONLY) != 0;
          attr.SecurityQualityOfService = &qos;
      }
--
-+/*
-     status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES, &attr, &io, NULL,
++	
++    if (attr & FILE_ATTRIBUTE_DIRECTORY)
++		printf("ReOpenFile DEBUG attr: is a directory\n");
++	else
++		printf("ReOpenFile DEBUG attr: is a file\n");
+ 
+-    status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES, &attr, &io, NULL,
++    status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES | FILE_WRITE_ATTRIBUTES, &attr, &io, NULL,
                             0, sharing, FILE_OPEN, get_nt_file_options( attributes ), NULL, 0 );
-+*/
-+    status = NtOpenFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES | FILE_WRITE_ATTRIBUTES,
-+                           &attr, &io, sharing, get_nt_file_options( attributes ));
-+
++	printf("======= ReOpenFile DEBUG with some job done =======\n\n");
      if (!set_ntstatus( status ))
          return INVALID_HANDLE_VALUE;
      return file;
