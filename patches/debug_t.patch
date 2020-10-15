@@ -1,17 +1,31 @@
 diff --git a/dlls/kernelbase/file.c b/dlls/kernelbase/file.c
-index b265866ac5..712138bd75 100644
+index b265866ac5..a83c8424c5 100644
 --- a/dlls/kernelbase/file.c
 +++ b/dlls/kernelbase/file.c
-@@ -3288,10 +3288,10 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
-         SetLastError(ERROR_INVALID_PARAMETER);
+@@ -3289,9 +3289,11 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
          return INVALID_HANDLE_VALUE;
      }
--
-+/*
+ 
++
      if (attributes & FILE_FLAG_DELETE_ON_CLOSE)
          access |= DELETE;
--
-+*/
+ 
++
      InitializeObjectAttributes( &attr, &empty, OBJ_CASE_INSENSITIVE, handle, NULL );
      if (attributes & SECURITY_SQOS_PRESENT)
      {
+@@ -3301,9 +3303,13 @@ HANDLE WINAPI DECLSPEC_HOTPATCH ReOpenFile( HANDLE handle, DWORD access, DWORD s
+         qos.EffectiveOnly = (attributes & SECURITY_EFFECTIVE_ONLY) != 0;
+         attr.SecurityQualityOfService = &qos;
+     }
+-
++/*
+     status = NtCreateFile( &file, access | SYNCHRONIZE | FILE_READ_ATTRIBUTES, &attr, &io, NULL,
+                            0, sharing, FILE_OPEN, get_nt_file_options( attributes ), NULL, 0 );
++*/
++    status = NtOpenFile( &file, access | SYNCHRONIZE | FILE_READ_DATA | FILE_READ_ATTRIBUTES | FILE_WRITE_DATA | FILE_WRITE_ATTRIBUTES | FILE_APPEND_DATA,
++                           &attr, &io, sharing, get_nt_file_options( attributes ));
++
+     if (!set_ntstatus( status ))
+         return INVALID_HANDLE_VALUE;
+     return file;
