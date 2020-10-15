@@ -14,8 +14,7 @@ echo "* Wine part:"
 echo "* Getting wine source and patch..."
 
 # Using url of release:
-#wget -q "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
-wget -q "https://dl.winehq.org/wine/source/4.x/wine-${WINE_VERSION}.tar.xz"
+wget -q "https://dl.winehq.org/wine/source/5.x/wine-${WINE_VERSION}.tar.xz"
 tar xf "wine-${WINE_VERSION}.tar.xz" || die "* cant extract wine!"
 mv "wine-${WINE_VERSION}" "wine-src" || die "* cant rename wine-src!"
 
@@ -34,8 +33,8 @@ cd "${WORKDIR}/wine-src" || die "Cant enter on ${WORKDIR}/wine-src dir!"
 #patch -p1 < "${WORKDIR}/patches/add_WINELDLIBRARY.patch" || die "Cant apply the add_WINELDLIBRARY.patch!"
 #echo "* Applying Implement_ReOpenFile.patch..."
 #patch -p1 < "${WORKDIR}/patches/Implement_ReOpenFile.patch" || die "Cant apply the Implement_ReOpenFile.patch!"
-echo "* Applying old_stub_ReOpenFile.patch..."
-patch -p1 < "${WORKDIR}/patches/old_stub_ReOpenFile.patch" || die "Cant apply the old_stub_ReOpenFile.patch!"
+#echo "* Applying old_stub_ReOpenFile.patch..."
+#patch -p1 < "${WORKDIR}/patches/old_stub_ReOpenFile.patch" || die "Cant apply the old_stub_ReOpenFile.patch!"
 
 
 cd "${WORKDIR}" || die "Cant enter on ${WORKDIR} dir!"
