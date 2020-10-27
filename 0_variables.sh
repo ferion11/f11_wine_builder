@@ -1,6 +1,6 @@
 #!/bin/bash
 export WINE_VERSION="5.17"
-export STAGING_VERSION="${WINE_VERSION}"
+export STAGING_VERSION="${WINE_VERSION}.2"
 
 export SDL2_VERSION="2.0.12"
 export FAUDIO_VERSION="20.08"
